@@ -5,24 +5,24 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.krustef.librarymanagement.dto.AuthorDTO;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "authors")
+@Table(name = "author")
 public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "author_id")
-    private Long authorId;
+    private Long id;
 
     @Column(name = "author_name")
-    private String authorName;
+    private String name;
 
     @Column(name = "birth_date")
     private LocalDate birthDate;
@@ -30,7 +30,6 @@ public class Author {
     @Column(name = "nationality")
     private String nationality;
 
-    public AuthorDTO toDTO() {
-        return new AuthorDTO(authorId, authorName, birthDate, nationality);
-    }
+    @ManyToMany(mappedBy = "authors")
+    private Set<Book> books;
 }

@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.krustef.librarymanagement.dto.BorrowingHistoryDTO;
 
 import java.time.LocalDate;
 
@@ -19,8 +18,7 @@ public class BorrowingHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "borrow_id")
-    private Long borrowId;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "book_id", nullable = false)
@@ -30,13 +28,6 @@ public class BorrowingHistory {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "borrow_date")
-    private LocalDate borrowDate;
-
-    @Column(name = "return_date")
-    private LocalDate returnDate;
-
-    public BorrowingHistoryDTO toDTO() {
-        return new BorrowingHistoryDTO(borrowId, book.toDTO(), user.toDTO(), borrowDate, returnDate);
-    }
+    private LocalDate borrowedDate;
+    private LocalDate returnedDate;
 }

@@ -1,7 +1,6 @@
 package org.krustef.librarymanagement.service;
 
-import org.krustef.librarymanagement.dto.BookDTO;
-import org.krustef.librarymanagement.dto.GenreDTO;
+import org.krustef.librarymanagement.models.Author;
 import org.krustef.librarymanagement.models.Book;
 import org.krustef.librarymanagement.models.Genre;
 import org.krustef.librarymanagement.repository.BookRepository;
@@ -9,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class BookService {
@@ -21,58 +19,45 @@ public class BookService {
         this.bookRepository = bookRepository;
     }
 
-    public List<BookDTO> getAllBooksDTO() {
-        return bookRepository.findAll().stream()
-                .map(this::mapToDTO)
-                .collect(Collectors.toList());
+    public List<Book> getAllBooks() {
+        return bookRepository.findAll();
     }
 
-    public BookDTO getBookDTOById(Long bookId) {
-        Book book = bookRepository.findById(bookId).orElse(null);
-        return (book != null) ? mapToDTO(book) : null;
+    public Book getBookById(Long id) {
+        return bookRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Book not found"));
     }
 
-    public BookDTO saveBookDTO(BookDTO bookDTO) {
-        Book book = mapToEntity(bookDTO);
-        return mapToDTO(bookRepository.save(book));
+    public Book saveBook(Book book) {
+        return bookRepository.save(book);
     }
 
-    public void deleteBookById(Long bookId) {
-        bookRepository.deleteById(bookId);
+    public Book updateBook(Long id, Book updatedBook) {
+        return bookRepository.findById(id)
+                .map(book -> {
+                    book.setTitle(updatedBook.getTitle());
+                    book.setDescription(updatedBook.getDescription());
+                    book.setPublicationYear(updatedBook.getPublicationYear());
+                    book.setGenres(updatedBook.getGenres());
+                    book.setAuthors(updatedBook.getAuthors());
+                    return bookRepository.save(book);
+                })
+                .orElseThrow(() -> new RuntimeException("Book not found"));
     }
 
-    private BookDTO mapToDTO(Book book) {
-        return new BookDTO(
-                book.getBookId(),
-                book.getTitle(),
-                book.getAuthor(),
-                book.getIsbn(),
-                book.getPublicationDate(),
-                book.getQuantityAvailable(),
-                mapToDTO(book.getGenre())
-        );
+    public void deleteBook(Long id) {
+        if (bookRepository.existsById(id)) {
+            bookRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("Book not found");
+        }
     }
 
-    private GenreDTO mapToDTO(Genre genre) {
-        return new GenreDTO(genre.getGenreId(), genre.getGenreName());
+    public List<Book> findBooksByAuthor(Author author) {
+        return bookRepository.findByAuthors(author);
     }
 
-    private Book mapToEntity(BookDTO bookDTO) {
-        Book book = new Book();
-        book.setBookId(bookDTO.getBookId());
-        book.setTitle(bookDTO.getTitle());
-        book.setAuthor(bookDTO.getAuthor());
-        book.setIsbn(bookDTO.getIsbn());
-        book.setPublicationDate(bookDTO.getPublicationDate());
-        book.setQuantityAvailable(bookDTO.getQuantityAvailable());
-        book.setGenre(mapToEntity(bookDTO.getGenre()));
-        return book;
-    }
-
-    private Genre mapToEntity(GenreDTO genreDTO) {
-        Genre genre = new Genre();
-        genre.setGenreId(genreDTO.getGenreId());
-        genre.setGenreName(genreDTO.getGenreName());
-        return genre;
+    public List<Book> findBooksByGenre(Genre genre) {
+        return bookRepository.findByGenre(genre);
     }
 }

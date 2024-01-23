@@ -1,17 +1,15 @@
 package org.krustef.librarymanagement.service;
 
-import org.krustef.librarymanagement.dto.GenreDTO;
 import org.krustef.librarymanagement.models.Genre;
 import org.krustef.librarymanagement.repository.GenreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 public class GenreService {
-
     private final GenreRepository genreRepository;
 
     @Autowired
@@ -19,37 +17,37 @@ public class GenreService {
         this.genreRepository = genreRepository;
     }
 
-    public List<GenreDTO> getAllGenresDTO() {
-        return genreRepository.findAll().stream()
-                .map(this::mapToDTO)
-                .collect(Collectors.toList());
+    public List<Genre> getAllGenres() {
+        return genreRepository.findAll();
     }
 
-    public GenreDTO getGenreDTOById(Long genreId) {
-        Genre genre = genreRepository.findById(genreId).orElse(null);
-        return (genre != null) ? mapToDTO(genre) : null;
+    public Genre getGenreById(Long id) {
+        return genreRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Genre not found"));
     }
 
-    public GenreDTO saveGenreDTO(GenreDTO genreDTO) {
-        Genre genre = mapToEntity(genreDTO);
-        return mapToDTO(genreRepository.save(genre));
+    public Genre saveGenre(Genre genre) {
+        return genreRepository.save(genre);
     }
 
-    public void deleteGenreById(Long genreId) {
-        genreRepository.deleteById(genreId);
+    public Genre updateGenre(Long id, Genre updatedGenre) {
+        return genreRepository.findById(id)
+                .map(genre -> {
+                    genre.setName(updatedGenre.getName());
+                    return genreRepository.save(genre);
+                })
+                .orElseThrow(() -> new RuntimeException("Genre not found"));
     }
 
-    private GenreDTO mapToDTO(Genre genre) {
-        return new GenreDTO(
-                genre.getGenreId(),
-                genre.getGenreName()
-        );
+    public void deleteGenre(Long id) {
+        if (genreRepository.existsById(id)) {
+            genreRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("Genre not found");
+        }
     }
 
-    private Genre mapToEntity(GenreDTO genreDTO) {
-        Genre genre = new Genre();
-        genre.setGenreId(genreDTO.getGenreId());
-        genre.setGenreName(genreDTO.getGenreName());
-        return genre;
+    public Optional<Genre> getGenreByName(String name) {
+        return genreRepository.findByName(name);
     }
 }

@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.krustef.librarymanagement.dto.UserDTO;
 import org.krustef.librarymanagement.enums.Role;
 
 import java.util.Set;
@@ -20,24 +19,18 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
-    private Long userId;
+    private Long id;
 
-    @Column(name = "username")
     private String username;
-
-    @Column(name = "password")
+    private String email;
     private String password;
 
-    @Column(name = "email")
-    private String email;
-
-    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @ElementCollection(targetClass = Role.class)
+    @CollectionTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
 
-    public UserDTO toDTO() {
-        return new UserDTO(userId, username, email, roles);
-    }
+    @OneToMany(mappedBy = "user")
+    private Set<BorrowingHistory> borrowingHistories;
 }

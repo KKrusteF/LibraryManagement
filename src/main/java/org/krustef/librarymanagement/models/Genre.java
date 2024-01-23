@@ -5,7 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.krustef.librarymanagement.dto.GenreDTO;
+
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -17,13 +18,10 @@ public class Genre {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "genre_id")
-    private Long genreId;
+    private Long id;
 
-    @Column(name = "genre_name")
-    private String genreName;
+    private String name;
 
-    public GenreDTO toDTO() {
-        return new GenreDTO(genreId, genreName);
-    }
+    @ManyToMany(mappedBy = "genres")
+    private Set<Book> books;
 }

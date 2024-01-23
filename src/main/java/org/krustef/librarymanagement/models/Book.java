@@ -1,44 +1,35 @@
 package org.krustef.librarymanagement.models;
 
 import jakarta.persistence.*;
-import lombok.*;
-import org.krustef.librarymanagement.dto.BookDTO;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "books")
+@Table(name = "book")
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "book_id")
-    private Long bookId;
+    private Long id;
 
-    @Column(name = "title")
-    private String title;
-
-    @Column(name = "author")
-    private String author;
-
-    @Column(name = "isbn")
     private String isbn;
+    private String title;
+    private String description;
+    private int publicationYear;
+    private String genres;
+    private int totalCopies;
 
-    @Column(name = "publication_date")
-    private LocalDate publicationDate;
-
-    @Column(name = "quantity_available")
-    private int quantityAvailable;
-
-    @ManyToOne
-    @JoinColumn(name = "genre_id", nullable = false)
-    private Genre genre;
-
-    public BookDTO toDTO() {
-        return new BookDTO(bookId, title, author, isbn, publicationDate, quantityAvailable, genre.toDTO());
-    }
+    @ManyToMany
+    @JoinTable(name = "book_author",
+            joinColumns = @JoinColumn(name = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "author_id"))
+    private Set<Author> authors;
 }
 
