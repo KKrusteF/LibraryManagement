@@ -1,39 +1,19 @@
 package org.krustef.librarymanagement.service;
 
 import org.krustef.librarymanagement.models.Author;
-import org.krustef.librarymanagement.repository.AuthorRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
-public class AuthorService {
+public interface AuthorService {
 
-    private final AuthorRepository authorRepository;
+    List<Author> findAllAuthors();
 
-    @Autowired
-    public AuthorService(AuthorRepository authorRepository) {
-        this.authorRepository = authorRepository;
-    }
+    Author findAuthorById(Long id);
 
-    public List<Author> getAllAuthors() {
-        return authorRepository.findAll();
-    }
+    void createAuthor(Author author);
 
-    public Author getAuthorById(Long id) throws RuntimeException {
-        return authorRepository.findById(id).orElseThrow(() -> new RuntimeException("Author not found: " + id));
-    }
+    void updateAuthor(Author author);
 
-    public Author saveAuthor(Author author) {
-        return authorRepository.save(author);
-    }
+    void deleteAuthor(Long id);
 
-    public void deleteAuthor(Long id) throws RuntimeException {
-        if(authorRepository.existsById(id)) {
-            authorRepository.deleteById(id);
-        } else {
-            throw new RuntimeException("Author not found: " + id);
-        }
-    }
 }

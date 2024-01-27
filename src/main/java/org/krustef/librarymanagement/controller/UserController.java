@@ -1,15 +1,26 @@
 package org.krustef.librarymanagement.controller;
 
-import org.krustef.librarymanagement.service.UserService;
+import org.krustef.librarymanagement.models.UserEntity;
+import org.krustef.librarymanagement.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
+@RequestMapping("/users")
 public class UserController {
-    private final UserService userService;
+
+    private final UserServiceImpl userService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserServiceImpl userService) {
         this.userService = userService;
+    }
+
+    @GetMapping("/{id}")
+    public UserEntity getUserById(@PathVariable Long id) {
+        return userService.getUserById(id);
     }
 }

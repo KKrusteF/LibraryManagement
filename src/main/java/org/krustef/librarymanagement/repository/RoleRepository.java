@@ -1,10 +1,10 @@
 package org.krustef.librarymanagement.repository;
 
-import org.krustef.librarymanagement.models.UserEntity;
+import org.krustef.librarymanagement.models.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends JpaRepository<UserEntity, Long> {
-    UserEntity findByUsername(String username);
+public interface RoleRepository extends JpaRepository<Role, Long> {
+    Role findByName(String name);
 }

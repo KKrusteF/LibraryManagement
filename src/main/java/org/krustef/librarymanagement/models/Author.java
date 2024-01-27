@@ -1,35 +1,30 @@
 package org.krustef.librarymanagement.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Entity
-@Table(name = "author")
+@Table(name = "authors")
 public class Author {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "author_id")
     private Long id;
 
-    @Column(name = "author_name")
+    @Column(name = "name", length = 100, nullable = false, unique = true)
     private String name;
 
-    @Column(name = "birth_date")
-    private LocalDate birthDate;
+    @Column(name = "description", length = 250, nullable = false)
+    private String description;
 
-    @Column(name = "nationality")
-    private String nationality;
-
-    @ManyToMany(mappedBy = "authors")
-    private Set<Book> books;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, mappedBy = "authors")
+    private Set<Book> books = new HashSet<>();
 }

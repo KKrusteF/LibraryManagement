@@ -19,12 +19,17 @@ configurations {
 
 repositories {
     mavenCentral()
+    maven { setUrl("https://repo.spring.io/milestone") }
 }
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity6")
+    implementation("org.hibernate.validator:hibernate-validator")
     implementation("nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect")
     compileOnly("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
