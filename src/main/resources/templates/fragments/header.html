@@ -48,6 +48,10 @@
         <li sec:authorize="!isAuthenticated()" class="nav-item active my-2 my-lg-0">
             <a class="nav-link" th:href="@{/register}">Register</a>
         </li>
+
+        <li sec:authorize="isAuthenticated()" class="nav-item active my-2 my-lg-0">
+            <a class="nav-link" th:text="'Welcome ' + ${#authentication.name}">Logout</a>
+        </li>
         <li sec:authorize="isAuthenticated()" class="nav-item active my-2 my-lg-0">
             <a class="nav-link" th:href="@{/logout}">Logout</a>
         </li>
